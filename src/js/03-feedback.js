@@ -5,6 +5,9 @@
 // 4. Зроби так, щоб сховище оновлювалось не частіше, ніж раз на 500 мілісекунд. Для цього додай до проекту і використовуй бібліотеку lodash.throttle.
 
 
+// "доброго вечора, у таску 8-3 якщо не заповнене одне або інше поле сабміт не робимо, а показуємо альорт, як у дз 6 таск 8
+// дз приймаю, але із дз 9 чекаю підправлену 8-3"
+
 import throttle from 'lodash/throttle';
 
 const refs = {
@@ -33,7 +36,7 @@ function onInput(event){
         data.message = event.target.value;
     }
 
-    localStorage.setItem('feedback-form-state', JSON.stringify(data));
+    localStorage.setItem('feedback-form-state', JSON.stringify(data)); 
 }
 
 function onSubmit(event){
@@ -47,6 +50,10 @@ function onSubmit(event){
         email: email.value,
         message: message.value,
     };
+
+    if(email.value === "" || message.value === ""){
+        alert("Don't be lazy, fill up all the fields !");
+    }
 
     console.log(userInfo);
     event.currentTarget.reset();
