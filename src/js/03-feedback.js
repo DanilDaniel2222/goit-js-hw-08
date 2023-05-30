@@ -8,57 +8,60 @@
 // "доброго вечора, у таску 8-3 якщо не заповнене одне або інше поле сабміт не робимо, а показуємо альорт, як у дз 6 таск 8
 // дз приймаю, але із дз 9 чекаю підправлену 8-3"
 
+// "Модуль 8 Таск 3 - при оновленні форми не мають підтягуватися дані вже з відправленого сабміту - підправте будь ласка"
+
 import throttle from 'lodash/throttle';
+const LOCAL_KEY = 'feedback-form-state';
 
-const refs = {
-    form: document.querySelector('form'),
-    input: document.querySelector('input'),
-    textarea: document.querySelector('textarea'),
-};
+const form = document.querySelector('.feedback-form');
 
-const data = JSON.parse(localStorage.getItem('feedback-form-state')) || {          
-    email: '',
-    message: '',
-};
+form.addEventListener("input", throttle(onInput, 500));
+form.addEventListener('submit', onSubmit);
 
-refs.input.value = data.email;
-refs.textarea.value = data.message;
-
-refs.form.addEventListener("input", throttle(onInput, 500));
-refs.form.addEventListener('submit', onSubmit);
+let dataForm = JSON.parse(localStorage.getItem(LOCAL_KEY)) || {};
+const { email, message } = form.elements;
 
 function onInput(event){
-    if(event.target.nodeName === 'INPUT'){
-        data.email = event.target.value;
-    }
-
-    if(event.target.nodeName === 'TEXTAREA'){
-        data.message = event.target.value;
-    }
-
-    localStorage.setItem('feedback-form-state', JSON.stringify(data)); 
+    dataForm = { email: email.value, message: message.value };
+    localStorage.setItem(LOCAL_KEY, JSON.stringify(dataForm));
 }
 
 function onSubmit(event){
     event.preventDefault();
-
-    const {
-        elements: {email, message},
-    } = event.currentTarget;
-
-    const userInfo = {
-        email: email.value,
-        message: message.value,
-    };
+    console.log({ email: email.value, message: message.value });
 
     if(email.value === "" || message.value === ""){
         alert("Don't be lazy, fill up all the fields !");
     }
-
-    console.log(userInfo);
     event.currentTarget.reset();
-    localStorage.removeItem('feedback-form-state');
+    localStorage.removeItem(LOCAL_KEY);
+    dataForm = {};
 }
+
+function reloadPage() {
+    if(dataForm) {
+        email.value = dataForm.email || '';
+        message.value = dataForm.message || '';
+    }
+}
+reloadPage();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
